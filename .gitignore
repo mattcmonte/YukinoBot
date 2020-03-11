@@ -1,0 +1,10 @@
+Pipfile
+Pipfile.lock
+.vscode/
+__pycache__
+discord.log
+discord_bot/
+oauth.py
+omdbKey.py
+owmkey.py
+cogs/Pipfile

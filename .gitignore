@@ -8,3 +8,4 @@ oauth.py
 omdbKey.py
 owmkey.py
 cogs/Pipfile
+cogs/polls.json

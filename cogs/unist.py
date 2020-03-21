@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+from discord import errors
+
 
 PATH = '/home/matt/Documents/Projects/YukinoBot/cogs'
 
@@ -19,7 +21,7 @@ class Unist(commands.Cog):
         self.bot = bot   
 
     @commands.command()
-    async def attack(self, ctx, victim, *name_of_move):
+    async def attack(self, ctx, victim: discord.Member, *name_of_move):
         """Outputs a GIF of a character's attack and mentions a user.
 
         Keyword Arguments:
@@ -27,11 +29,8 @@ class Unist(commands.Cog):
         victim          -- the name of the user to be mentioned
         name_of_move    -- the name of an attack
         """
-        print(f'Stored Victim Name: {victim}')
-        victim = discord.utils.find(lambda m: m.mention==victim,
-                                    ctx.guild.members)
         if victim is None:
-            await ctx.send('No user found with that name')
+            await ctx.send('No user found with that name1111')
         else:
             mentions = [
                 member.id for member in ctx.guild.members
@@ -47,9 +46,18 @@ class Unist(commands.Cog):
                 else:
                     await ctx.send('Name of move not found.')
             else:
-                await ctx.send(
-                    'You can\'t attack yourself.'
-                )
+                await ctx.send('You can\'t attack yourself.')
+
+    @attack.error
+    async def attack_error(self, ctx, error):
+        """A function which handles errors thrown by the attack function.
+
+        Keyword Arguments:
+        ctx   -- discord context object
+        error -- a discord exception object 
+        """
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("No user found with that name")
 
         
 def setup(bot):

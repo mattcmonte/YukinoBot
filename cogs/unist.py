@@ -29,24 +29,21 @@ class Unist(commands.Cog):
         victim          -- the name of the user to be mentioned
         name_of_move    -- the name of an attack
         """
-        if victim is None:
-            await ctx.send('No user found with that name1111')
-        else:
-            mentions = [
-                member.id for member in ctx.guild.members
-            ]
-            if victim.id != ctx.author.mention and victim.id in mentions:
-                name_of_move = ' '.join(name_of_move)
-                if name_of_move in moves.keys():
-                    await ctx.send(
-                        f'{victim.mention} was killed by'
-                        f' {ctx.author.display_name}',
-                        file=discord.File(moves[name_of_move])
-                    )
-                else:
-                    await ctx.send('Name of move not found.')
+        mentions = [
+            member.id for member in ctx.guild.members
+        ]
+        if victim.id != ctx.author.id and victim.id in mentions:
+            name_of_move = ' '.join(name_of_move)
+            if name_of_move in moves.keys():
+                await ctx.send(
+                    f'{victim.mention} was killed by'
+                    f' {ctx.author.display_name}',
+                    file=discord.File(moves[name_of_move])
+                )
             else:
-                await ctx.send('You can\'t attack yourself.')
+                await ctx.send('Name of move not found.')
+        else:
+            await ctx.send('You can\'t attack yourself.')
 
     @attack.error
     async def attack_error(self, ctx, error):

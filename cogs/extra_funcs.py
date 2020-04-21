@@ -6,34 +6,36 @@ import random
 
 
 def duplicate_count(polls, poll_name):
-    """Returns number of duplicate poll names in a list of dictionaries."""
+    """Returns number of duplicate poll names in a list of dictionaries.
+    
+    Keyword Arguments:
+    polls     -- a list of dictionaries
+    poll_name -- the poll name to check for duplicates of
+    """
     counter = 0
     for poll_dict in polls:
         if poll_dict['name'] == poll_name.content:
-        # or polls.index(poll_dict['name']) == poll_name.content:
             counter += 1
-
-    # dup_count = [
-    #     obj['name'].count(poll_name.content) for obj in polls
-    # ]
-    # print(dup_count)
-    # if dup_count == []:
-    #     dup_count.append(0)
-    # print(dup_count)
     return counter
 
-
 def dump_poll_data(polls):
-    """Writes poll data from a list of dictionaries to a json file."""
+    """Writes poll data from a list of dictionaries to a json file.
+    
+    Keyword Arguments:
+    polls -- a list of dictionaries
+    """
     with open('./cogs/polls.json', 'w', encoding='utf-8') as poll_file:
         json.dump(polls, poll_file, indent=2)
-
 
 def load_poll_data():
     """Reads poll data from a json file into a list of dictionaries."""
     polls = []
+    
     with open('./cogs/polls.json', 'r', encoding='utf-8') as poll_file:
-        polls = json.load(poll_file)
+        try:
+            polls = json.load(poll_file)
+        except json.JSONDecodeError:
+            pass
     return polls
 
 def generate_hex_int():
@@ -42,23 +44,20 @@ def generate_hex_int():
     hex_num = hex(random_num)
     return int(hex_num, 16)
 
-def get_next_index(dict_list):
+def get_next_index(polls):
     """Returns the next index for a list of dictionaries.
 
     Keyword Arguments:
-    dict_list -- a list of dictionaries
+    polls -- a list of dictionaries
     """
-    new_index = ""
-    try:
-        indexes = [
-            dictionary['index'] for dictionary in dict_list
-        ]
-        print(indexes)
-        new_index = max(indexes) + 1
-    except KeyError:
+    new_index = ''
+    if polls == []:
         new_index = 1
-    except ValueError:
-        pass
+    else:
+        indexes = [
+            dictionary['index'] for dictionary in polls
+        ]
+        new_index = max(indexes) + 1
     return new_index
 
 def format_date(date_dict):
@@ -84,3 +83,11 @@ def list_to_str(genres):
     """
     genres = ', '.join(genre for genre in genres)
     return genres
+
+def remove_whitespace(the_list):
+    """Returns a list of strings with each element's whitespace removed.
+
+    Keyword Arguments:
+    the_list -- a list of strings
+    """
+    return [item.strip() for item in the_list]

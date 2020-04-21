@@ -31,7 +31,7 @@ yukinos_exts = [
     'cogs.admin',
     'cogs.weeb',
     'cogs.movie-tv',
-    'cogs.unist'
+    'cogs.poll'
 ]
 
 # Events:
@@ -44,11 +44,6 @@ async def on_ready():
     )
     game = discord.Game('with lolis')
     await bot.change_presence(activity=game)
-
-# @bot.event
-# async def on_message(message):
-    
-#     await bot.process_commands(message)
 
 @bot.event
 async def on_member_remove(member):

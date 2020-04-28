@@ -14,7 +14,7 @@ def duplicate_count(polls, poll_name):
     """
     counter = 0
     for poll_dict in polls:
-        if poll_dict['name'] == poll_name.content:
+        if poll_dict['name'].lower() == poll_name.content.lower():
             counter += 1
     return counter
 

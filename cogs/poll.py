@@ -15,7 +15,23 @@ polls = load_poll_data()
 
 
 class Poll(commands.Cog):
-    """A module with administrative commands."""
+    """A module for managing polls.
+    
+    Methods:
+    create_poll_embed  -- returns a discord embed object containing poll data
+    get_user_input     -- checks if a specific member sent a specific message
+    search_poll        -- returns a dictionary of poll data or False if not 
+                          found
+    validate_poll_name -- returns a valid poll name
+    validate_poll_opts -- returns a valid list of poll options
+    show_polls         -- a command which allows a user to show all polls
+    lookup_poll        -- a command which allows a user to search the poll list
+    vote               -- a command which allows a user to vote in a poll
+    poll               -- a command which allows a user to create a poll
+    del_poll           -- a command which allows an admin to delete a poll
+    del_poll_error     -- a function which handles errors thrown by the 
+                          del_poll function
+    """
     def __init__(self, bot):
         self.bot = bot 
     
@@ -71,7 +87,7 @@ class Poll(commands.Cog):
         # If the poll exists
         if dup_count == 1: 
             for poll_dict in polls:
-                if poll_dict['name'] == poll_name.content:
+                if poll_dict['name'].lower() == poll_name.content.lower():
                     poll = poll_dict
         return poll
 
@@ -105,6 +121,7 @@ class Poll(commands.Cog):
         sender       -- the name of the sender
         """
         while True:
+            poll_options[:] = [opt.lower() for opt in poll_options]
             if '' not in set(poll_options) and len(set(poll_options)) > 1:
                 break
             else:
@@ -115,6 +132,7 @@ class Poll(commands.Cog):
                 )
             poll_options = await self.get_user_input(sender)
             poll_options = remove_whitespace(poll_options.content.split(','))
+        poll_options[:] = [opt[0].upper() for opt in poll_options]
         return list(set(poll_options))
 
     # Commands:
@@ -221,13 +239,17 @@ class Poll(commands.Cog):
         new_poll['participant_count'] = 0
         new_poll['poll_options'] = []
 
+        # Create a dictionary for each poll option.
         for poll_opt in poll_options:
             poll_option = {}
-            poll_option["option"] = poll_opt
-            poll_option["index"] = get_next_index(new_poll['poll_options'])
-            poll_option["voters"] = []
+            poll_option['option'] = poll_opt
+            poll_option['index'] = get_next_index(new_poll['poll_options'])
+            poll_option['voters'] = []
             new_poll['poll_options'].append(poll_option)
+
+        # Show the new poll which was just created for confirmation.
         await ctx.send(embed=await self.create_poll_embed(new_poll))
+
         polls.append(new_poll)
         dump_poll_data(polls)
     
@@ -259,7 +281,7 @@ class Poll(commands.Cog):
         error -- a discord exception object 
         """
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Only administrators may delete polls.")
+            await ctx.send('Only administrators may delete polls.')
 
 
 def setup(bot):

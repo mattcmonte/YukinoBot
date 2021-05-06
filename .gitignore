@@ -4,8 +4,6 @@ Pipfile.lock
 __pycache__
 discord.log
 discord_bot/
-oauth.py
-omdbKey.py
-owmkey.py
+api_keys/
 cogs/Pipfile
 cogs/polls.json
